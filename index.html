@@ -234,7 +234,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 
     <div class="card"><div class="card-t">Appearance</div><div class="theme-tog"><button class="theme-btn" id="th-light" onclick="setTheme('light')">Light</button><button class="theme-btn on" id="th-drac" onclick="setTheme('dracula')">Dark</button></div></div>
 
-    <div class="card"><div class="card-t">Google Sheets</div><div class="conn" id="conn-st"><span class="dot r"></span> Not connected</div><div class="fg" style="margin-top:10px"><label>Apps Script URL</label><input type="url" id="set-url" placeholder="https://script.google.com/macros/s/..." oninput="saveUrl()"></div><button class="btn-p" style="font-size:13px;padding:10px" onclick="testConn()">Test connection</button></div>
+    <div class="card"><div class="card-t">Google Sheets</div><div class="conn" id="conn-st"><span class="dot r"></span> Not connected</div><div class="fg" style="margin-top:10px"><label>Apps Script URL</label><input type="url" id="set-url" placeholder="https://script.google.com/macros/s/..." oninput="saveUrl()"></div><div style="display:flex;gap:8px;margin-top:0"><button class="btn-p" style="font-size:13px;padding:10px;flex:1" onclick="testConn()">Test connection</button><button class="btn-p" style="font-size:13px;padding:10px;flex:1;background:var(--bg4);color:var(--tx)" onclick="shareLink()">Share link</button></div></div>
 
     <div class="card"><div class="card-t">AI parsing (optional)</div><div class="fg"><label>LLM Provider</label><select id="set-prov" onchange="saveProv()"><option value="gemini">Google Gemini</option><option value="anthropic">Anthropic Claude</option></select></div><div class="fg"><label>API Key</label><input type="password" id="set-key" placeholder="Paste your API key..." oninput="saveKey()"></div><div class="test-row"><button class="btn-test" onclick="testLLM()">Test API key</button><span id="llm-res" style="font-size:12px;color:var(--tx3)"></span></div><p style="font-size:11px;color:var(--tx4);line-height:1.5;margin-top:10px">Enables smart voice parsing. Without it, the built-in parser handles simple inputs. ~$0.001/transaction.</p></div>
 
@@ -395,6 +395,7 @@ function rSettings(){document.getElementById('set-url').value=gUrl();document.ge
 const cats=gCats();['expense','income','savings'].forEach(type=>{const pf={expense:'exp',income:'inc',savings:'sav'}[type];document.getElementById(pf+'-cats').innerHTML=(cats[type]||[]).map((c,i)=>`<div class="cat-item"><div class="cat-icon">${c.icon}</div><div class="cat-name">${c.name}</div><button class="cat-del" onclick="rmCat('${type}',${i})">×</button></div>`).join('')})}
 
 function saveUrl(){localStorage.setItem(LS.url,document.getElementById('set-url').value.trim());updConn()}
+function shareLink(){const url=gUrl();if(!url){toast('Enter & save your Apps Script URL first');return}const link=location.origin+location.pathname+'?sheet='+encodeURIComponent(url);navigator.clipboard.writeText(link).then(()=>toast('Link copied! Send it to a friend.')).catch(()=>toast('Copy failed — try again'))}
 function saveKey(){localStorage.setItem(LS.key,document.getElementById('set-key').value.trim())}
 function saveProv(){localStorage.setItem(LS.prov,document.getElementById('set-prov').value)}
 async function testConn(){if(!gUrl()){toast('Enter URL first');return}toast('Testing...');const r=await sheetCall('ping');if(r?.success){toast('Connected!');updConn(true);await syncCatsSheet();rSettings()}else{toast('Failed.');updConn(false)}}
@@ -419,6 +420,8 @@ document.getElementById('m-detail').addEventListener('click',function(e){if(e.ta
 // ═══ INIT ═══
 if(!localStorage.getItem(LS.cat))sCats(DEF_CATS);
 document.documentElement.setAttribute('data-theme',localStorage.getItem(LS.theme)||'dracula');
+// Auto-configure from ?sheet= URL param
+(()=>{try{const p=new URL(location.href).searchParams.get('sheet');if(p){localStorage.setItem(LS.url,p);history.replaceState(null,'',location.pathname)}}catch{}})();
 (async()=>{if(gUrl()){try{await syncSheet();await syncCatsSheet()}catch{}}rHome()})();
 initSR();
 </script>
