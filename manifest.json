@@ -1,0 +1,17 @@
+{
+  "name": "Starve; Get Rich",
+  "short_name": "Starve",
+  "description": "Voice-powered budget tracker. Log by speaking. Get rich.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2309090b' width='100' height='100' rx='22'/><text x='50' y='62' text-anchor='middle' fill='%2322c55e' font-size='32' font-family='monospace' font-weight='700'>S;GR</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
