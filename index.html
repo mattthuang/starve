@@ -105,7 +105,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 .mover.on{display:flex}
 .modal{width:100%;max-width:500px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:16px 20px calc(var(--safe-b) + 20px);max-height:88vh;overflow-y:auto;animation:su .3s ease;transition:background .3s}
 @keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.m-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 14px}
+.m-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 6px;padding:10px 40px;background-clip:content-box;cursor:grab;touch-action:none}
 .modal h2{font-size:20px;font-weight:700;margin-bottom:14px;letter-spacing:-.3px}
 
 .fg{margin-bottom:12px}
@@ -416,6 +416,38 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 
 document.getElementById('m-input').addEventListener('click',function(e){if(e.target===this)closeM()});
 document.getElementById('m-detail').addEventListener('click',function(e){if(e.target===this)closeDet()});
+
+// ═══ SWIPE TO DISMISS ═══
+function addSwipeDismiss(moverId,closeFn){
+  const mover=document.getElementById(moverId);
+  const modal=mover.querySelector('.modal');
+  const handle=modal.querySelector('.m-handle');
+  let startY=0,curY=0,active=false;
+  handle.addEventListener('touchstart',e=>{
+    startY=e.touches[0].clientY;curY=0;active=true;
+    modal.style.transition='none';
+  },{passive:true});
+  handle.addEventListener('touchmove',e=>{
+    if(!active)return;
+    curY=Math.max(0,e.touches[0].clientY-startY);
+    modal.style.transform='translateY('+curY+'px)';
+  },{passive:true});
+  handle.addEventListener('touchend',()=>{
+    if(!active)return;active=false;
+    if(curY>110){
+      modal.style.transition='transform .22s ease';
+      modal.style.transform='translateY(100%)';
+      setTimeout(()=>{closeFn();modal.style.transform='';modal.style.transition=''},220);
+    }else{
+      modal.style.transition='transform .2s ease';
+      modal.style.transform='';
+      setTimeout(()=>modal.style.transition='',200);
+    }
+    curY=0;
+  });
+}
+addSwipeDismiss('m-input',closeM);
+addSwipeDismiss('m-detail',closeDet);
 
 // ═══ INIT ═══
 if(!localStorage.getItem(LS.cat))sCats(DEF_CATS);
