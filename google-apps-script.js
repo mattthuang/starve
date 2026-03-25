@@ -64,7 +64,7 @@ function handleRequest(e) {
         result = parseLLM(body.text, body.key, body.provider);
         break;
       case 'ping':
-        result = { success: true, message: 'Connected to Starve: Get Rich backend!' };
+        result = { success: true, message: 'Connected to Starve: Get Rich backend!', sheetUrl: SpreadsheetApp.getActiveSpreadsheet().getUrl() };
         break;
       default:
         result = { success: false, error: 'Unknown action: ' + action };
