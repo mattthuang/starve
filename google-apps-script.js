@@ -17,6 +17,7 @@
 // Sheet names
 const TX_SHEET = 'Transactions';
 const CAT_SHEET = 'Categories';
+const SET_SHEET = 'Settings';
 
 function doGet(e) {
   return handleRequest(e);
@@ -59,6 +60,12 @@ function handleRequest(e) {
         break;
       case 'saveCategories':
         result = saveCategories(body);
+        break;
+      case 'getSetting':
+        result = getSetting(params.key || body.key);
+        break;
+      case 'saveSetting':
+        result = saveSetting(body.key, body.value);
         break;
       case 'parseLLM':
         result = parseLLM(body.text, body.key, body.provider);
@@ -253,6 +260,36 @@ function saveCategories(cats) {
     sheet.getRange(2, 1, rows.length, 3).setValues(rows);
   }
   
+  return { success: true };
+}
+
+// ========== SETTINGS (key/value store) ==========
+
+function getSetting(key) {
+  if (!key) return { success: false, error: 'No key provided' };
+  const sheet = getOrCreateSheet(SET_SHEET, ['Key', 'Value']);
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === key) {
+      try { return { success: true, value: JSON.parse(data[i][1]) }; }
+      catch { return { success: true, value: data[i][1] }; }
+    }
+  }
+  return { success: true, value: null };
+}
+
+function saveSetting(key, value) {
+  if (!key) return { success: false, error: 'No key provided' };
+  const sheet = getOrCreateSheet(SET_SHEET, ['Key', 'Value']);
+  const json = JSON.stringify(value);
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === key) {
+      sheet.getRange(i + 1, 2).setValue(json);
+      return { success: true };
+    }
+  }
+  sheet.appendRow([key, json]);
   return { success: true };
 }
 

@@ -377,7 +377,7 @@ const sCats=c=>localStorage.setItem(LS.cat,JSON.stringify(c));
 
 // ═══ RECURRING ═══
 function advanceDate(ds,freq){const d=new Date(ds+'T00:00:00');switch(freq){case'daily':d.setDate(d.getDate()+1);break;case'weekly':d.setDate(d.getDate()+7);break;case'biweekly':d.setDate(d.getDate()+14);break;case'monthly':d.setMonth(d.getMonth()+1);break;case'yearly':d.setFullYear(d.getFullYear()+1);break}return d.toISOString().split('T')[0]}
-function processRecurring(){const recs=gRec();if(!recs.length)return;const today=new Date().toISOString().split('T')[0];let changed=false,txs=gTx();recs.forEach(r=>{if(!r.active)return;if(r.nextDate<=today){const tx={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:r.type,amount:r.amount,category:r.category,description:r.description||'',date:r.nextDate,created:new Date().toISOString(),recurring:true};txs.unshift(tx);if(gUrl())sheetCall('addTransaction',tx);r.nextDate=advanceDate(r.nextDate,r.frequency);changed=true}});if(changed){sTx(txs);sRec(recs)}}
+function processRecurring(){const recs=gRec();if(!recs.length)return;const today=new Date().toISOString().split('T')[0];let changed=false,txs=gTx();recs.forEach(r=>{if(!r.active)return;if(r.nextDate<=today){const tx={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:r.type,amount:r.amount,category:r.category,description:r.description||'',date:r.nextDate,created:new Date().toISOString(),recurring:true};txs.unshift(tx);if(gUrl())sheetCall('addTransaction',tx);r.nextDate=advanceDate(r.nextDate,r.frequency);changed=true}});if(changed){sTx(txs);sRec(recs);pushRec(recs)}}
 
 // ═══ THEME ═══
 function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem(LS.theme,t);document.querySelector('meta[name="theme-color"]').content=t==='dracula'?'#282a36':'#f8f8f2';document.getElementById('th-drac').className='theme-btn'+(t==='dracula'?' on':'');document.getElementById('th-light').className='theme-btn'+(t==='light'?' on':'');if(document.getElementById('s-dash').classList.contains('on'))rDash()}
@@ -386,6 +386,9 @@ function setTheme(t){document.documentElement.setAttribute('data-theme',t);local
 async function sheetCall(action,body=null){const url=gUrl();if(!url)return null;try{const p=new URLSearchParams({action});if(body){const r=await fetch(url+'?'+p,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)});return await r.json()}else{const r=await fetch(url+'?'+p,{redirect:'follow'});return await r.json()}}catch(e){return null}}
 async function syncSheet(){const r=await sheetCall('getTransactions');if(r?.success){sTx(r.transactions);return r.transactions}return gTx()}
 async function syncCatsSheet(){const r=await sheetCall('getCategories');if(r?.success&&r.categories){sCats(r.categories);return r.categories}return gCats()}
+async function syncSettings(){try{const[gr,rr]=await Promise.all([sheetCall('getSetting',{key:'goals'}),sheetCall('getSetting',{key:'recurring'})]);if(gr?.success&&gr.value)sGoals(gr.value);if(rr?.success&&rr.value)sRec(rr.value)}catch{}}
+async function pushGoals(g){if(gUrl())sheetCall('saveSetting',{key:'goals',value:g}).catch(()=>{})}
+async function pushRec(r){if(gUrl())sheetCall('saveSetting',{key:'recurring',value:r}).catch(()=>{})}
 
 // ═══ STATE ═══
 let curType='expense',curCat='',dPeriod='1m',selTxId=null,editMode=false,charts={};
@@ -493,7 +496,7 @@ function openSheet(){const u=localStorage.getItem(LS.sheet);if(!u){toast('Enter 
 
 // ═══ GOALS SETTINGS ═══
 function rGoalSettings(){const goals=gGoals(),cats=gCats(),all=cats.expense||[];const html=all.map(c=>`<div class="goal-set-row"><span class="goal-set-icon">${c.icon}</span><span class="goal-set-name">${c.name}</span><input class="goal-amt-inp" type="number" placeholder="No goal" min="0" step="10" value="${goals[c.name]||''}" onchange="saveGoal('${c.name.replace(/'/g,"\\'")}',this.value)"></div>`).join('');const el=document.getElementById('goal-set-list');if(el)el.innerHTML=html||'<p style="font-size:12px;color:var(--tx4)">No expense categories found.</p>'}
-function saveGoal(name,val){const goals=gGoals();const v=parseFloat(val);if(v>0)goals[name]=v;else delete goals[name];sGoals(goals);rHome()}
+function saveGoal(name,val){const goals=gGoals();const v=parseFloat(val);if(v>0)goals[name]=v;else delete goals[name];sGoals(goals);pushGoals(goals);rHome()}
 
 // ═══ RECURRING SETTINGS ═══
 let recType='expense',recCat='';
@@ -503,8 +506,8 @@ function closeRecM(){document.getElementById('m-rec').classList.remove('on')}
 function setRecType(t){recType=t;recCat='';['e','i','s'].forEach(x=>{const k={e:'expense',i:'income',s:'savings'}[x];document.getElementById('rtb-'+x).className='tbtn'+(k===t?' a-'+x[0]:'')});rRecPills()}
 function rRecPills(){const cats=gCats()[recType]||[];document.getElementById('r-cpills').innerHTML=cats.map(c=>`<button class="cpill${recCat===c.name?' on':''}" onclick="pickRecCat('${c.name.replace(/'/g,"\\'")}')">${c.icon} ${c.name}</button>`).join('')}
 function pickRecCat(n){recCat=n;rRecPills()}
-function saveRec(){const amt=parseFloat(document.getElementById('r-amt').value);if(!amt||amt<=0){toast('Enter an amount');return}if(!recCat){toast('Pick a category');return}const next=document.getElementById('r-next').value||new Date().toISOString().split('T')[0];const rec={id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),type:recType,amount:amt,category:recCat,description:document.getElementById('r-desc').value.trim(),frequency:document.getElementById('r-freq').value,nextDate:next,active:true};const recs=gRec();recs.push(rec);sRec(recs);closeRecM();rRecList();toast('Added!')}
-function delRec(i){if(!confirm('Remove this recurring transaction?'))return;const recs=gRec();recs.splice(i,1);sRec(recs);rRecList();toast('Removed')}
+function saveRec(){const amt=parseFloat(document.getElementById('r-amt').value);if(!amt||amt<=0){toast('Enter an amount');return}if(!recCat){toast('Pick a category');return}const next=document.getElementById('r-next').value||new Date().toISOString().split('T')[0];const rec={id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),type:recType,amount:amt,category:recCat,description:document.getElementById('r-desc').value.trim(),frequency:document.getElementById('r-freq').value,nextDate:next,active:true};const recs=gRec();recs.push(rec);sRec(recs);pushRec(recs);closeRecM();rRecList();toast('Added!')}
+function delRec(i){if(!confirm('Remove this recurring transaction?'))return;const recs=gRec();recs.splice(i,1);sRec(recs);pushRec(recs);rRecList();toast('Removed')}
 
 function saveKey(){localStorage.setItem(LS.key,document.getElementById('set-key').value.trim())}
 function saveProv(){localStorage.setItem(LS.prov,document.getElementById('set-prov').value)}
@@ -569,7 +572,7 @@ document.documentElement.setAttribute('data-theme',localStorage.getItem(LS.theme
 // Auto-configure from ?sheet= URL param
 (()=>{try{const p=new URL(location.href).searchParams.get('sheet');if(p){localStorage.setItem(LS.url,p);history.replaceState(null,'',location.pathname)}}catch{}})();
 processRecurring();
-(async()=>{if(gUrl()){try{await syncSheet();await syncCatsSheet()}catch{}}rHome()})();
+(async()=>{if(gUrl()){try{await syncSettings();await syncSheet();await syncCatsSheet()}catch{}}rHome()})();
 initSR();
 </script>
 </body>
