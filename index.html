@@ -105,8 +105,16 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 .mover.on{display:flex}
 .modal{width:100%;max-width:500px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:16px 20px calc(var(--safe-b) + 20px);max-height:88vh;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;animation:su .3s ease;transition:background .3s}
 @keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.m-handle{width:100%;height:24px;display:flex;align-items:center;justify-content:center;margin:0 0 6px;cursor:grab;touch-action:none}
+.m-handle{width:calc(100% + 40px);padding:14px 0 10px;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:none;position:sticky;top:-16px;margin:-16px -20px 6px;background:var(--bg2);z-index:1;border-radius:var(--radius-xl) var(--radius-xl) 0 0;transition:background .3s;flex-shrink:0}
 .m-handle::after{content:'';width:40px;height:4px;background:var(--border2);border-radius:2px;display:block}
+.fg input[type="date"]{-webkit-appearance:none;appearance:none;width:100%;min-width:0}
+.ni-wrap{position:relative}
+.ni-wrap input{padding-right:46px}
+.ni-wrap input.rec{border-color:var(--red)!important;box-shadow:0 0 0 3px rgba(255,85,85,.15)}
+.mic-inline{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--green);border-radius:50%;transition:color .2s;flex-shrink:0}
+.mic-inline.rec{color:var(--red);animation:pls 1.2s ease infinite}
+.mic-inline svg{width:18px;height:18px}
+.vtx-hint{font-size:11px;color:var(--green);font-family:var(--mono);font-weight:700;min-height:0;margin-top:4px;transition:opacity .2s}
 .modal h2{font-size:20px;font-weight:700;margin-bottom:14px;letter-spacing:-.3px}
 
 .fg{margin-bottom:12px}
@@ -326,8 +334,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 </nav>
 
 <div class="mover" id="m-input"><div class="modal"><div class="m-handle"></div><h2 id="mtitle">Log transaction</h2>
-  <div class="va" id="va" onclick="toggleVoice()"><svg width="28" height="28" fill="none" stroke="var(--green)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg><div id="vtx"></div><p>Tap to speak or type below</p><div class="hint">"spent 47 at Costco on groceries yesterday"</div></div>
-  <div class="fg"><label>Type naturally <span id="llm-badge" style="display:none" class="status ok">AI</span></label><input type="text" id="ni" placeholder='"coffee 5.50" or "got paid 2100"' oninput="onInput(this.value)"></div>
+  <div class="fg"><label>What happened? <span id="llm-badge" style="display:none" class="status ok">AI</span></label><div class="ni-wrap"><input type="text" id="ni" placeholder='Speak or type — "coffee 5.50 yesterday"' oninput="onInput(this.value)"><button class="mic-inline" id="mic-il" onclick="toggleVoice()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg></button></div><div id="vtx" class="vtx-hint"></div></div>
   <div class="pp" id="pp"><span id="pp-t"></span><span class="pp-dot">·</span><span id="pp-a"></span><span class="pp-dot">·</span><span id="pp-c"></span><span id="pp-d"></span><span class="pp-dot">·</span><span id="pp-dt"></span></div>
   <div class="ttog"><button class="tbtn a-e" id="tb-e" onclick="setType('expense')">Expense</button><button class="tbtn" id="tb-i" onclick="setType('income')">Income</button><button class="tbtn" id="tb-s" onclick="setType('savings')">Savings</button></div>
   <div class="fg"><label>Amount ($)</label><input type="number" id="i-amt" placeholder="0.00" step="0.01" inputmode="decimal"></div>
@@ -447,8 +454,8 @@ recog.onstart=()=>{document.getElementById('vtx').textContent='Listening...'};
 recog.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById('vtx').textContent=t;document.getElementById('ni').value=t;if(e.results[0].isFinal){stopRec();clearTimeout(llmT);const rx=regexParse(t);showParsed(rx);if(gKey()){document.getElementById('pp-t').innerHTML+=' <span class="llm-load"></span>';llmParse(t).then(r=>{if(r)showParsed(r)}).catch(()=>{})}}else{showParsed(regexParse(t))}};
 recog.onerror=e=>{stopRec();const msgs={'not-allowed':'Mic blocked — check browser/phone Settings → Safari → Mic.','service-not-allowed':'Mic not allowed on file:// — open via GitHub Pages.','no-speech':'No speech detected, try again.','audio-capture':'No microphone found.','network':'Network error with speech service.'};toast(msgs[e.error]||'Mic error: '+e.error)};
 recog.onend=()=>{if(isRec)stopRec()};return true}
-function toggleVoice(){if(isRec){stopRec();return}if(!recog&&!initSR()){toast('Voice not supported — use Safari on iPhone.');return}try{recog.start();isRec=true;document.getElementById('va').classList.add('rec');document.getElementById('vtx').textContent='Allow mic when prompted…'}catch(e){toast('Could not start mic: '+e.message)}}
-function stopRec(){isRec=false;document.getElementById('va').classList.remove('rec');try{recog?.stop()}catch{}}
+function toggleVoice(){if(isRec){stopRec();return}if(!recog&&!initSR()){toast('Voice not supported — use Safari on iPhone.');return}try{recog.start();isRec=true;document.getElementById('mic-il').classList.add('rec');document.getElementById('ni').classList.add('rec');document.getElementById('vtx').textContent='Allow mic when prompted…'}catch(e){toast('Could not start mic: '+e.message)}}
+function stopRec(){isRec=false;document.getElementById('mic-il')?.classList.remove('rec');document.getElementById('ni')?.classList.remove('rec');document.getElementById('vtx').textContent='';try{recog?.stop()}catch{}}
 
 // ═══ SAVE / EDIT ═══
 async function saveTx(){const amt=parseFloat(document.getElementById('i-amt').value);if(!amt||amt<=0){toast('Enter an amount');return}if(!curCat){toast('Pick a category');return}
