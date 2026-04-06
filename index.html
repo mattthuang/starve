@@ -174,13 +174,8 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 .cat-goal-inp:focus{border-color:var(--green)}
 .cat-goal-inp::placeholder{color:var(--tx4);font-weight:400}
 .cat-del{width:26px;height:26px;border:none;border-radius:50%;background:var(--red-dim);color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
-.add-row{display:flex;gap:6px;margin-top:10px;align-items:center}
-.add-row input{flex:1;min-width:0}
-.add-row button{padding:10px 14px;border:none;border-radius:10px;background:var(--green);font-weight:700;cursor:pointer;font-family:var(--font);font-size:13px;flex-shrink:0}
-[data-theme="dracula"] .add-row button{color:#282a36}[data-theme="light"] .add-row button{color:#fff}
-.emoji-inp-new{width:38px;height:38px;font-size:18px;text-align:center;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--tx);outline:none;flex-shrink:0;padding:0;transition:border-color .2s}
-.emoji-inp-new:focus{border-color:var(--green)}
-[data-theme="dracula"] .add-row button{color:#282a36}[data-theme="light"] .add-row button{color:#fff}
+.cat-add{width:26px;height:26px;border:none;border-radius:50%;background:var(--green-dim);color:var(--green);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;flex-shrink:0;line-height:1}
+.add-row{display:flex;gap:8px;margin-top:8px;align-items:center}
 
 .theme-tog{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:3px;border:1px solid var(--border)}
 .theme-btn{flex:1;padding:8px 12px;border:none;border-radius:8px;background:transparent;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;color:var(--tx3);transition:all .2s;text-align:center}
@@ -317,9 +312,9 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 
     <div class="card"><div class="card-t">AI parsing (optional)</div><div class="fg"><label>LLM Provider</label><select id="set-prov" onchange="saveProv()"><option value="gemini">Google Gemini</option><option value="anthropic">Anthropic Claude</option></select></div><div class="fg"><label>API Key</label><input type="password" id="set-key" placeholder="Paste your API key..." oninput="saveKey()"></div><div class="test-row"><button class="btn-test" onclick="testLLM()">Test API key</button><span id="llm-res" style="font-size:12px;color:var(--tx3)"></span></div><p style="font-size:11px;color:var(--tx4);line-height:1.5;margin-top:10px">Enables smart voice parsing. Without it, the built-in parser handles simple inputs. ~$0.001/transaction.</p></div>
 
-    <div class="card"><div class="card-t">Expense categories</div><div id="exp-cats"></div><div class="add-row"><input type="text" class="emoji-inp-new" id="new-ico-exp" placeholder="📝" maxlength="2"><input type="text" id="new-exp" placeholder="Category name" oninput="suggestEmoji(this.value,'exp')"><input class="cat-goal-inp" type="number" id="new-goal-exp" placeholder="$ goal" inputmode="decimal" min="0" step="10"><button onclick="addCat('expense')">Add</button></div></div>
-    <div class="card"><div class="card-t">Income categories</div><div id="inc-cats"></div><div class="add-row"><input type="text" class="emoji-inp-new" id="new-ico-inc" placeholder="💵" maxlength="2"><input type="text" id="new-inc" placeholder="Category name" oninput="suggestEmoji(this.value,'inc')"><button onclick="addCat('income')">Add</button></div></div>
-    <div class="card"><div class="card-t">Savings categories</div><div id="sav-cats"></div><div class="add-row"><input type="text" class="emoji-inp-new" id="new-ico-sav" placeholder="🏦" maxlength="2"><input type="text" id="new-sav" placeholder="Category name" oninput="suggestEmoji(this.value,'sav')"><input class="cat-goal-inp" type="number" id="new-goal-sav" placeholder="$ goal" inputmode="decimal" min="0" step="10"><button onclick="addCat('savings')">Add</button></div></div>
+    <div class="card"><div class="card-t">Expense categories</div><div id="exp-cats"></div><div class="add-row"><input type="text" class="cat-emoji-inp" id="new-ico-exp" placeholder="📝" maxlength="2"><input type="text" class="cat-name-inp" id="new-exp" placeholder="New category" oninput="suggestEmoji(this.value,'exp')"><input class="cat-goal-inp" type="number" id="new-goal-exp" placeholder="$ goal" inputmode="decimal" min="0" step="10"><button class="cat-add" onclick="addCat('expense')">+</button></div></div>
+    <div class="card"><div class="card-t">Income categories</div><div id="inc-cats"></div><div class="add-row"><input type="text" class="cat-emoji-inp" id="new-ico-inc" placeholder="💵" maxlength="2"><input type="text" class="cat-name-inp" id="new-inc" placeholder="New category" oninput="suggestEmoji(this.value,'inc')"><button class="cat-add" onclick="addCat('income')">+</button></div></div>
+    <div class="card"><div class="card-t">Savings categories</div><div id="sav-cats"></div><div class="add-row"><input type="text" class="cat-emoji-inp" id="new-ico-sav" placeholder="🏦" maxlength="2"><input type="text" class="cat-name-inp" id="new-sav" placeholder="New category" oninput="suggestEmoji(this.value,'sav')"><input class="cat-goal-inp" type="number" id="new-goal-sav" placeholder="$ goal" inputmode="decimal" min="0" step="10"><button class="cat-add" onclick="addCat('savings')">+</button></div></div>
 
     <div class="card"><div class="card-t">Recurring transactions</div><div id="rec-list"></div><button class="btn-s" style="margin-top:8px" onclick="openAddRec()">+ Add recurring</button></div>
 
