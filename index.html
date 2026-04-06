@@ -166,24 +166,20 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 .si-l{font-size:14px;font-weight:600}.si-d{font-size:11px;color:var(--tx4);margin-top:1px}
 .cat-item{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border)}
 .cat-item:last-child{border-bottom:none}
-.cat-emoji-btn{font-size:18px;width:34px;height:34px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s}
-.cat-emoji-btn:active{border-color:var(--green)}
-.cat-name{flex:1;font-size:13px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cat-goal-inp{width:72px;padding:7px 8px;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--tx);font-family:var(--mono);font-size:12px;text-align:right;outline:none;flex-shrink:0;transition:border-color .2s}
+.cat-emoji-inp{width:38px;height:38px;font-size:18px;text-align:center;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--tx);outline:none;flex-shrink:0;padding:0;cursor:text;transition:border-color .2s}
+.cat-emoji-inp:focus{border-color:var(--green)}
+.cat-name-inp{flex:1;height:38px;padding:0 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--tx);font-family:var(--font);font-size:13px;font-weight:600;outline:none;min-width:0;transition:border-color .2s;cursor:default}
+.cat-name-inp:focus{border-color:var(--green);cursor:text}
+.cat-goal-inp{width:72px;height:38px;padding:0 8px;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--tx);font-family:var(--mono);font-size:13px;font-weight:600;text-align:right;outline:none;flex-shrink:0;transition:border-color .2s}
 .cat-goal-inp:focus{border-color:var(--green)}
-.cat-goal-inp::placeholder{color:var(--tx4)}
+.cat-goal-inp::placeholder{color:var(--tx4);font-weight:400}
 .cat-del{width:26px;height:26px;border:none;border-radius:50%;background:var(--red-dim);color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
 .add-row{display:flex;gap:6px;margin-top:10px;align-items:center}
 .add-row input{flex:1;min-width:0}
 .add-row button{padding:10px 14px;border:none;border-radius:10px;background:var(--green);font-weight:700;cursor:pointer;font-family:var(--font);font-size:13px;flex-shrink:0}
-.emoji-btn-new{width:38px;height:38px;font-size:20px;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color .2s}
-.emoji-btn-new:active{border-color:var(--green)}
-.emoji-picker-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:16px 20px calc(var(--safe-b)+16px);z-index:400;display:none;animation:su .25s ease;transition:background .3s}
-.emoji-picker-wrap.on{display:block}
-.emoji-picker-title{font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
-.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;max-height:180px;overflow-y:auto}
-.emoji-opt{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:22px;border:none;background:transparent;border-radius:8px;cursor:pointer;width:100%}
-.emoji-opt:active{background:var(--bg4)}
+[data-theme="dracula"] .add-row button{color:#282a36}[data-theme="light"] .add-row button{color:#fff}
+.emoji-inp-new{width:38px;height:38px;font-size:18px;text-align:center;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--tx);outline:none;flex-shrink:0;padding:0;transition:border-color .2s}
+.emoji-inp-new:focus{border-color:var(--green)}
 [data-theme="dracula"] .add-row button{color:#282a36}[data-theme="light"] .add-row button{color:#fff}
 
 .theme-tog{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:3px;border:1px solid var(--border)}
@@ -321,9 +317,9 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 
     <div class="card"><div class="card-t">AI parsing (optional)</div><div class="fg"><label>LLM Provider</label><select id="set-prov" onchange="saveProv()"><option value="gemini">Google Gemini</option><option value="anthropic">Anthropic Claude</option></select></div><div class="fg"><label>API Key</label><input type="password" id="set-key" placeholder="Paste your API key..." oninput="saveKey()"></div><div class="test-row"><button class="btn-test" onclick="testLLM()">Test API key</button><span id="llm-res" style="font-size:12px;color:var(--tx3)"></span></div><p style="font-size:11px;color:var(--tx4);line-height:1.5;margin-top:10px">Enables smart voice parsing. Without it, the built-in parser handles simple inputs. ~$0.001/transaction.</p></div>
 
-    <div class="card"><div class="card-t">Expense categories <span style="font-size:10px;color:var(--tx4);text-transform:none;letter-spacing:0;font-weight:400">· tap emoji to change</span></div><div id="exp-cats"></div><div class="add-row"><button class="emoji-btn-new" id="new-ico-exp" onclick="openEmojiPickerForNew('exp')">📝</button><input type="text" id="new-exp" placeholder="Category name" oninput="suggestEmoji(this.value,'exp')"><input class="cat-goal-inp" type="number" id="new-goal-exp" placeholder="$ goal" inputmode="decimal" min="0" step="10"><button onclick="addCat('expense')">Add</button></div></div>
-    <div class="card"><div class="card-t">Income categories <span style="font-size:10px;color:var(--tx4);text-transform:none;letter-spacing:0;font-weight:400">· tap emoji to change</span></div><div id="inc-cats"></div><div class="add-row"><button class="emoji-btn-new" id="new-ico-inc" onclick="openEmojiPickerForNew('inc')">💵</button><input type="text" id="new-inc" placeholder="Category name" oninput="suggestEmoji(this.value,'inc')"><button onclick="addCat('income')">Add</button></div></div>
-    <div class="card"><div class="card-t">Savings categories <span style="font-size:10px;color:var(--tx4);text-transform:none;letter-spacing:0;font-weight:400">· tap emoji to change</span></div><div id="sav-cats"></div><div class="add-row"><button class="emoji-btn-new" id="new-ico-sav" onclick="openEmojiPickerForNew('sav')">🏦</button><input type="text" id="new-sav" placeholder="Category name" oninput="suggestEmoji(this.value,'sav')"><input class="cat-goal-inp" type="number" id="new-goal-sav" placeholder="$ goal" inputmode="decimal" min="0" step="10"><button onclick="addCat('savings')">Add</button></div></div>
+    <div class="card"><div class="card-t">Expense categories</div><div id="exp-cats"></div><div class="add-row"><input type="text" class="emoji-inp-new" id="new-ico-exp" placeholder="📝" maxlength="2"><input type="text" id="new-exp" placeholder="Category name" oninput="suggestEmoji(this.value,'exp')"><input class="cat-goal-inp" type="number" id="new-goal-exp" placeholder="$ goal" inputmode="decimal" min="0" step="10"><button onclick="addCat('expense')">Add</button></div></div>
+    <div class="card"><div class="card-t">Income categories</div><div id="inc-cats"></div><div class="add-row"><input type="text" class="emoji-inp-new" id="new-ico-inc" placeholder="💵" maxlength="2"><input type="text" id="new-inc" placeholder="Category name" oninput="suggestEmoji(this.value,'inc')"><button onclick="addCat('income')">Add</button></div></div>
+    <div class="card"><div class="card-t">Savings categories</div><div id="sav-cats"></div><div class="add-row"><input type="text" class="emoji-inp-new" id="new-ico-sav" placeholder="🏦" maxlength="2"><input type="text" id="new-sav" placeholder="Category name" oninput="suggestEmoji(this.value,'sav')"><input class="cat-goal-inp" type="number" id="new-goal-sav" placeholder="$ goal" inputmode="decimal" min="0" step="10"><button onclick="addCat('savings')">Add</button></div></div>
 
     <div class="card"><div class="card-t">Recurring transactions</div><div id="rec-list"></div><button class="btn-s" style="margin-top:8px" onclick="openAddRec()">+ Add recurring</button></div>
 
@@ -372,8 +368,6 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
   <button class="btn-s" onclick="closeRecM()">Cancel</button>
 </div></div>
 
-<div id="emoji-overlay" onclick="closeEmojiPicker()" style="display:none;position:fixed;inset:0;z-index:399;background:rgba(0,0,0,.45)"></div>
-<div class="emoji-picker-wrap" id="emoji-picker"><div class="emoji-picker-title">Choose emoji</div><div class="emoji-grid" id="emoji-grid"></div><button class="btn-s" style="margin-top:10px" onclick="closeEmojiPicker()">Cancel</button></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -508,23 +502,15 @@ function showMonthTx(ym){const txs=gTx().filter(t=>t.date.startsWith(ym));const 
 
 // ═══ SETTINGS ═══
 function rSettings(){document.getElementById('set-url').value=gUrl();document.getElementById('set-sheet').value=localStorage.getItem(LS.sheet)||'';document.getElementById('set-key').value=gKey();document.getElementById('set-prov').value=gProv();const th=localStorage.getItem(LS.theme)||'dracula';document.getElementById('th-drac').className='theme-btn'+(th==='dracula'?' on':'');document.getElementById('th-light').className='theme-btn'+(th==='light'?' on':'');updConn();
-const cats=gCats(),goals=gGoals();const hasGoal={expense:true,income:false,savings:true};['expense','income','savings'].forEach(type=>{const pf={expense:'exp',income:'inc',savings:'sav'}[type];document.getElementById(pf+'-cats').innerHTML=(cats[type]||[]).map((c,i)=>{const gv=goals[c.name]||'';const gi=hasGoal[type]?`<input class="cat-goal-inp" type="number" inputmode="decimal" placeholder="$ goal" value="${gv}" onchange="saveInlineCatGoal('${c.name.replace(/'/g,"\\'")}',this.value)">`:'' ;return`<div class="cat-item"><button class="cat-emoji-btn" onclick="openEmojiPickerForCat('${type}',${i})">${c.icon}</button><span class="cat-name">${c.name}</span>${gi}<button class="cat-del" onclick="rmCat('${type}',${i})">×</button></div>`}).join('')});rRecList()}
+const cats=gCats(),goals=gGoals();const hasGoal={expense:true,income:false,savings:true};['expense','income','savings'].forEach(type=>{const pf={expense:'exp',income:'inc',savings:'sav'}[type];document.getElementById(pf+'-cats').innerHTML=(cats[type]||[]).map((c,i)=>{const gv=goals[c.name]||'';const gi=hasGoal[type]?`<input class="cat-goal-inp" type="number" inputmode="decimal" placeholder="$ goal" value="${gv}" onchange="saveInlineCatGoal('${c.name.replace(/'/g,"\\'")}',this.value)">`:'';return`<div class="cat-item"><input class="cat-emoji-inp" type="text" value="${c.icon}" maxlength="2" onchange="saveCatEmoji('${type}',${i},this.value)"><input class="cat-name-inp" type="text" value="${c.name.replace(/"/g,'&quot;')}" readonly onfocus="this.removeAttribute('readonly')" onchange="saveCatName('${type}',${i},this.value)">${gi}<button class="cat-del" onclick="rmCat('${type}',${i})">×</button></div>`}).join('')});rRecList()}
 
 function saveUrl(){localStorage.setItem(LS.url,document.getElementById('set-url').value.trim());updConn()}
 function saveSheetUrl(){localStorage.setItem(LS.sheet,document.getElementById('set-sheet').value.trim())}
 function openSheet(){const u=localStorage.getItem(LS.sheet);if(!u){toast('Enter your Google Sheet URL above');return}window.open(u,'_blank')}
 
-// ═══ EMOJI PICKER ═══
-const EMOJI_SET=['🏠','🛒','🍽️','☕','⛽','🚗','📱','💡','🛍️','🎬','💪','📈','✈️','🐾','🎓','🎁','💊','🍕','🍺','🏥','👶','🏖️','🎮','📺','💄','🔧','🌱','🎵','🎸','🍣','🥗','🍔','🚌','🚲','✂️','📚','🎨','🏊','🎯','💰','💻','💵','💳','🏦','📊','🆘','🇨🇦','💎','🏋️','🧴','💈','🐕','🐈','🏈','⚽','🎾','🎤','🌮','🍱','🥐','🍷','🏪','🚿','🧃','🎪','🎭','🎲','🧘','🚴','🏄','🌿','☀️','❄️','🔑','🛋️','🖥️','📷','🧳','🎒','💐','🍎','🥑'];
-let emojiPickerCb=null;
-function initEmojiPicker(){document.getElementById('emoji-grid').innerHTML=EMOJI_SET.map(e=>`<button class="emoji-opt" onclick="pickEmoji('${e}')">${e}</button>`).join('')}
-function openEmojiPicker(cb){emojiPickerCb=cb;document.getElementById('emoji-picker').classList.add('on');document.getElementById('emoji-overlay').style.display='block'}
-function closeEmojiPicker(){document.getElementById('emoji-picker').classList.remove('on');document.getElementById('emoji-overlay').style.display='none';emojiPickerCb=null}
-function pickEmoji(e){if(emojiPickerCb)emojiPickerCb(e);closeEmojiPicker()}
-function openEmojiPickerForNew(pfx){openEmojiPicker(e=>{const btn=document.getElementById('new-ico-'+pfx);if(btn)btn.textContent=e})}
-function openEmojiPickerForCat(type,idx){openEmojiPicker(e=>{const cats=gCats();cats[type][idx].icon=e;sCats(cats);if(gUrl())sheetCall('saveCategories',cats);rSettings()})}
-
 // ═══ GOALS SETTINGS ═══
+function saveCatEmoji(type,i,val){const cats=gCats();if(!val.trim())return;cats[type][i].icon=val.trim();sCats(cats);if(gUrl())sheetCall('saveCategories',cats)}
+function saveCatName(type,i,val){const name=val.trim();if(!name)return;const cats=gCats();const old=cats[type][i].name;cats[type][i].name=name;sCats(cats);if(gUrl())sheetCall('saveCategories',cats);const goals=gGoals();if(goals[old]){goals[name]=goals[old];delete goals[old];sGoals(goals);pushGoals(goals)}}
 function saveGoal(name,val){const goals=gGoals();const v=parseFloat(val);if(v>0)goals[name]=v;else delete goals[name];sGoals(goals);pushGoals(goals);rHome()}
 
 // ═══ RECURRING SETTINGS ═══
@@ -543,8 +529,8 @@ function saveProv(){localStorage.setItem(LS.prov,document.getElementById('set-pr
 async function testConn(){if(!gUrl()){toast('Enter URL first');return}toast('Testing...');const r=await sheetCall('ping');if(r?.success){toast('Connected!');updConn(true);if(r.sheetUrl)localStorage.setItem(LS.sheet,r.sheetUrl);await syncCatsSheet();rSettings()}else{toast('Failed.');updConn(false)}}
 function updConn(f){const el=document.getElementById('conn-st'),url=gUrl();if(!url){el.innerHTML='<span class="dot r"></span> Not connected';return}if(f===true){el.innerHTML='<span class="dot g"></span> Connected';return}if(f===false){el.innerHTML='<span class="dot r"></span> Failed';return}el.innerHTML='<span class="dot g"></span> URL saved — tap Test'}
 const EMOJI_MAP=[['🏠',['rent','mortgage','home','house','apartment','condo']],['🛒',['groceries','grocery','supermarket','costco','walmart','loblaws','food','market']],['🍽️',['dining','restaurant','eat','lunch','dinner','brunch','takeout','food']],['☕',['coffee','cafe','starbucks','tims','tim horton']],['⛽',['gas','fuel','petro','esso','shell','transport','transit','bus','subway','commute','parking','car']],['🚗',['car','auto','vehicle','drive']],['📱',['subscription','phone','mobile','internet','streaming','plan']],['💡',['utilities','hydro','electric','water','heat','gas','enbridge']],['🛍️',['shopping','clothes','clothing','fashion','amazon','shoes','retail']],['🎬',['entertainment','movie','concert','ticket','event','show']],['💪',['gym','fitness','health','doctor','dental','dentist','pharmacy','physio','sport']],['📈',['invest','stock','etf','crypto','trading','portfolio']],['✈️',['travel','flight','hotel','vacation','trip','airbnb']],['🐾',['pet','vet','dog','cat','animal']],['🎓',['education','school','tuition','course','book','learn']],['🎁',['gift','present','donation','charity']],['💰',['salary','paycheck','pay','income','wage','payroll']],['💻',['freelance','contract','gig','consulting','client']],['💵',['other income','cash','bonus','tips','refund']],['🏦',['savings','save','deposit']],['🆘',['emergency','emergency fund']],['🇨🇦',['tfsa']],['📊',['rrsp','retirement','pension']],['🍺',['bar','drinks','beer','wine','alcohol','pub']],['🏥',['medical','hospital','clinic','prescription']],['👶',['baby','child','kids','daycare','childcare']],['🏋️',['workout','yoga','pilates','crossfit']],['🎮',['gaming','game','console','xbox','playstation']],['📺',['netflix','disney','youtube','streaming','hulu']],['🏖️',['vacation','holiday','resort']],['💄',['beauty','makeup','salon','spa','haircut']],['🔧',['repair','maintenance','fix','plumbing','electrician']],['🌱',['garden','plant','outdoor','lawn']],['🍕',['pizza','fast food','mcdonald','burger']],['🎵',['music','spotify','concert','apple music']]];
-function suggestEmoji(name,pfx){if(!name.trim())return;const n=name.toLowerCase();const match=EMOJI_MAP.find(([,kws])=>kws.some(k=>n.includes(k)));if(match){const btn=document.getElementById('new-ico-'+pfx);if(btn)btn.textContent=match[0]}}
-function addCat(type){const pf={expense:'exp',income:'inc',savings:'sav'}[type],inp=document.getElementById('new-'+pf),name=inp.value.trim();if(!name)return;const def={expense:'📝',income:'💵',savings:'🏦'}[type];const icon=document.getElementById('new-ico-'+pf)?.textContent?.trim()||def;const cats=gCats();if(!cats[type])cats[type]=[];cats[type].push({name,icon});sCats(cats);if(gUrl())sheetCall('saveCategories',cats);const goalInp=document.getElementById('new-goal-'+pf);const gv=goalInp?parseFloat(goalInp.value):0;if(gv>0){const goals=gGoals();goals[name]=gv;sGoals(goals);pushGoals(goals)}inp.value='';if(goalInp)goalInp.value='';document.getElementById('new-ico-'+pf).textContent=def;rSettings();toast('Added!')}
+function suggestEmoji(name,pfx){if(!name.trim())return;const n=name.toLowerCase();const match=EMOJI_MAP.find(([,kws])=>kws.some(k=>n.includes(k)));if(match){const el=document.getElementById('new-ico-'+pfx);if(el&&!el.value)el.value=match[0]}}
+function addCat(type){const pf={expense:'exp',income:'inc',savings:'sav'}[type],inp=document.getElementById('new-'+pf),name=inp.value.trim();if(!name)return;const def={expense:'📝',income:'💵',savings:'🏦'}[type];const icoEl=document.getElementById('new-ico-'+pf);const icon=icoEl?.value?.trim()||def;const cats=gCats();if(!cats[type])cats[type]=[];cats[type].push({name,icon});sCats(cats);if(gUrl())sheetCall('saveCategories',cats);const goalInp=document.getElementById('new-goal-'+pf);const gv=goalInp?parseFloat(goalInp.value):0;if(gv>0){const goals=gGoals();goals[name]=gv;sGoals(goals);pushGoals(goals)}inp.value='';if(goalInp)goalInp.value='';if(icoEl)icoEl.value='';rSettings();toast('Added!')}
 function rmCat(type,i){const cats=gCats();const name=cats[type][i]?.name;cats[type].splice(i,1);sCats(cats);if(gUrl())sheetCall('saveCategories',cats);if(name){const goals=gGoals();if(goals[name]){delete goals[name];sGoals(goals);pushGoals(goals)}}rSettings()}
 function saveInlineCatGoal(name,val){const goals=gGoals();const v=parseFloat(val);if(v>0)goals[name]=v;else delete goals[name];sGoals(goals);pushGoals(goals);rHome()}
 
@@ -616,7 +602,6 @@ document.documentElement.setAttribute('data-theme',localStorage.getItem(LS.theme
 processRecurring();
 (async()=>{if(gUrl()){try{await syncSettings();await syncSheet();await syncCatsSheet()}catch{}}rHome()})();
 initSR();
-initEmojiPicker();
 </script>
 </body>
 </html>
