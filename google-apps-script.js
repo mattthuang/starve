@@ -18,6 +18,7 @@
 const TX_SHEET = 'Transactions';
 const CAT_SHEET = 'Categories';
 const SET_SHEET = 'Settings';
+const GOAL_SHEET = 'Goals';
 
 function doGet(e) {
   return handleRequest(e);
@@ -66,6 +67,12 @@ function handleRequest(e) {
         break;
       case 'saveSetting':
         result = saveSetting(body.key, body.value);
+        break;
+      case 'getGoals':
+        result = getGoals();
+        break;
+      case 'saveGoals':
+        result = saveGoals(body.goals || body);
         break;
       case 'parseLLM':
         result = parseLLM(body.text, body.key, body.provider);
@@ -290,6 +297,29 @@ function saveSetting(key, value) {
     }
   }
   sheet.appendRow([key, json]);
+  return { success: true };
+}
+
+// ========== GOALS ==========
+
+function getGoals() {
+  const sheet = getOrCreateSheet(GOAL_SHEET, ['Category', 'Amount']);
+  const data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return { success: true, goals: {} };
+  const goals = {};
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0]) goals[data[i][0].toString()] = parseFloat(data[i][1]) || 0;
+  }
+  return { success: true, goals };
+}
+
+function saveGoals(goals) {
+  if (!goals) return { success: false, error: 'No goals provided' };
+  const sheet = getOrCreateSheet(GOAL_SHEET, ['Category', 'Amount']);
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 1) sheet.deleteRows(2, lastRow - 1);
+  const rows = Object.entries(goals).filter(([, v]) => parseFloat(v) > 0).map(([cat, amt]) => [cat, parseFloat(amt)]);
+  if (rows.length > 0) sheet.getRange(2, 1, rows.length, 2).setValues(rows);
   return { success: true };
 }
 

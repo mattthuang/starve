@@ -396,8 +396,8 @@ function setTheme(t){document.documentElement.setAttribute('data-theme',t);local
 async function sheetCall(action,body=null){const url=gUrl();if(!url)return null;try{const p=new URLSearchParams({action});if(body){const r=await fetch(url+'?'+p,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)});return await r.json()}else{const r=await fetch(url+'?'+p,{redirect:'follow'});return await r.json()}}catch(e){return null}}
 async function syncSheet(){const r=await sheetCall('getTransactions');if(r?.success){sTx(r.transactions);return r.transactions}return gTx()}
 async function syncCatsSheet(){const r=await sheetCall('getCategories');if(r?.success&&r.categories){sCats(r.categories);return r.categories}return gCats()}
-async function syncSettings(){try{const[gr,rr]=await Promise.all([sheetCall('getSetting',{key:'goals'}),sheetCall('getSetting',{key:'recurring'})]);if(gr?.success&&gr.value)sGoals(gr.value);if(rr?.success&&rr.value)sRec(rr.value)}catch{}}
-async function pushGoals(g){if(gUrl())sheetCall('saveSetting',{key:'goals',value:g}).catch(()=>{})}
+async function syncSettings(){try{const[gr,rr]=await Promise.all([sheetCall('getGoals'),sheetCall('getSetting',{key:'recurring'})]);if(gr?.success&&gr.goals)sGoals(gr.goals);if(rr?.success&&rr.value)sRec(rr.value)}catch{}}
+async function pushGoals(g){if(gUrl())sheetCall('saveGoals',g).catch(()=>{})}
 async function pushRec(r){if(gUrl())sheetCall('saveSetting',{key:'recurring',value:r}).catch(()=>{})}
 
 // ═══ STATE ═══
