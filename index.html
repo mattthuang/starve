@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dracula">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#282a36">
+<meta name="theme-color" content="#f8f8f2">
 <title>Starve: Get Rich</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
@@ -58,6 +58,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 .h-btn svg{width:17px;height:17px}
 
 .scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 20px 110px;-webkit-overflow-scrolling:touch;display:none;scrollbar-width:none}
+@media(display-mode:standalone){.scr{padding-bottom:calc(65px + var(--safe-b))}}
 .scr::-webkit-scrollbar{display:none}
 .scr.on{display:block}
 
@@ -499,7 +500,7 @@ function rHistory(){const txs=gTx(),goals=gGoals(),el=document.getElementById('h
 function showMonthTx(ym){const txs=gTx().filter(t=>t.date.startsWith(ym));const monthName=new Date(ym+'-01').toLocaleDateString('en-CA',{month:'long',year:'numeric'});document.getElementById('txlist-title').textContent=monthName;const cats=gCats(),all=[...(cats.expense||[]),...(cats.income||[]),...(cats.savings||[])];const gr={};txs.forEach(tx=>{if(!gr[tx.date])gr[tx.date]=[];gr[tx.date].push(tx)});let html='';if(!txs.length){html='<div class="empty" style="padding:30px 0"><h3>No transactions</h3></div>'}else{Object.keys(gr).sort((a,b)=>b.localeCompare(a)).forEach(date=>{html+=`<div class="tg-h">${new Date(date+'T00:00:00').toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'})}</div>`;gr[date].forEach(tx=>{const co=all.find(c=>c.name===tx.category),ic=co?co.icon:'📝',ac=tx.type==='income'?'c-g':tx.type==='savings'?'c-a':'c-r',sign=tx.type==='income'?'+':tx.type==='savings'?'→':'−';html+=`<div class="txi" onclick="showDet('${tx.id}')"><div class="tx-ic ${tx.type.slice(0,3)}">${ic}</div><div class="tx-d"><div class="tx-n">${tx.description||tx.category}</div><div class="tx-c">${tx.category}</div></div><div class="tx-a ${ac}">${sign}$${tx.amount.toFixed(2)}</div></div>`})})}document.getElementById('txlist-body').innerHTML=html;document.getElementById('m-txlist').classList.add('on')}
 
 // ═══ SETTINGS ═══
-function rSettings(){document.getElementById('set-url').value=gUrl();document.getElementById('set-sheet').value=localStorage.getItem(LS.sheet)||'';document.getElementById('set-key').value=gKey();document.getElementById('set-prov').value=gProv();const th=localStorage.getItem(LS.theme)||'dracula';document.getElementById('th-drac').className='theme-btn'+(th==='dracula'?' on':'');document.getElementById('th-light').className='theme-btn'+(th==='light'?' on':'');updConn();
+function rSettings(){document.getElementById('set-url').value=gUrl();document.getElementById('set-sheet').value=localStorage.getItem(LS.sheet)||'';document.getElementById('set-key').value=gKey();document.getElementById('set-prov').value=gProv();const th=localStorage.getItem(LS.theme)||'light';document.getElementById('th-drac').className='theme-btn'+(th==='dracula'?' on':'');document.getElementById('th-light').className='theme-btn'+(th==='light'?' on':'');updConn();
 const cats=gCats(),goals=gGoals();const hasGoal={expense:true,income:false,savings:true};['expense','income','savings'].forEach(type=>{const pf={expense:'exp',income:'inc',savings:'sav'}[type];document.getElementById(pf+'-cats').innerHTML=(cats[type]||[]).map((c,i)=>{const gv=goals[c.name]||'';const gi=hasGoal[type]?`<input class="cat-goal-inp" type="number" inputmode="decimal" placeholder="$ goal" value="${gv}" onchange="saveInlineCatGoal('${c.name.replace(/'/g,"\\'")}',this.value)">`:'';return`<div class="cat-item"><input class="cat-emoji-inp" type="text" value="${c.icon}" maxlength="2" onchange="saveCatEmoji('${type}',${i},this.value)"><input class="cat-name-inp" type="text" value="${c.name.replace(/"/g,'&quot;')}" readonly onfocus="this.removeAttribute('readonly')" onchange="saveCatName('${type}',${i},this.value)">${gi}<button class="cat-del" onclick="rmCat('${type}',${i})">×</button></div>`}).join('')});rRecList()}
 
 function saveUrl(){localStorage.setItem(LS.url,document.getElementById('set-url').value.trim());updConn()}
@@ -594,7 +595,7 @@ addSwipeDismiss('m-rec',closeRecM);
 
 // ═══ INIT ═══
 if(!localStorage.getItem(LS.cat))sCats(DEF_CATS);
-document.documentElement.setAttribute('data-theme',localStorage.getItem(LS.theme)||'dracula');
+document.documentElement.setAttribute('data-theme',localStorage.getItem(LS.theme)||'light');
 // Auto-configure from ?sheet= URL param
 (()=>{try{const p=new URL(location.href).searchParams.get('sheet');if(p){localStorage.setItem(LS.url,p);history.replaceState(null,'',location.pathname)}}catch{}})();
 processRecurring();
