@@ -1,8 +1,9 @@
 {
-  "name": "Starve; Get Rich",
+  "name": "Starve: Get Rich",
   "short_name": "Starve",
   "description": "Voice-powered budget tracker. Log by speaking. Get rich.",
-  "start_url": "/index.html",
+  "start_url": "/starve/",
+  "scope": "/starve/",
   "display": "standalone",
   "background_color": "#09090b",
   "theme_color": "#09090b",
