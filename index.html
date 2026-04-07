@@ -608,7 +608,7 @@ document.documentElement.setAttribute('data-theme',localStorage.getItem(LS.theme
 processRecurring();
 (async()=>{if(gUrl()){try{await syncSettings();await syncSheet();await syncCatsSheet()}catch{}}rHome()})();
 initSR();
-function updateBottomSpacing(){const nav=document.querySelector('.bnav');if(!nav)return;const h=nav.offsetHeight;document.querySelectorAll('.scr').forEach(s=>s.style.paddingBottom=(h+8)+'px')}
+function updateBottomSpacing(){const nav=document.querySelector('.bnav');if(!nav)return;const h=nav.offsetHeight;document.querySelectorAll('.scr').forEach(s=>s.style.paddingBottom=(h+8)+'px');const t=document.createElement('div');t.style.cssText='position:fixed;bottom:0;padding-bottom:env(safe-area-inset-bottom)';document.body.appendChild(t);const safeB=parseInt(getComputedStyle(t).paddingBottom)||0;document.body.removeChild(t);setTimeout(()=>toast(`h:${window.innerHeight} nav:${h}px safe:${safeB}px`),500)}
 updateBottomSpacing();
 window.addEventListener('resize',updateBottomSpacing);
 window.addEventListener('orientationchange',updateBottomSpacing);
