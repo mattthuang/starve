@@ -11,6 +11,7 @@
 <link rel="apple-touch-icon" href="icon/apple-touch-icon.png">
 <link rel="icon" type="image/x-icon" href="icon/favicon.ico">
 <link rel="icon" type="image/svg+xml" href="icon/favicon.svg">
+<script>if(navigator.standalone||window.matchMedia('(display-mode:standalone)').matches)document.documentElement.classList.add('standalone')</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -59,7 +60,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 .h-btn svg{width:17px;height:17px}
 
 .scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 20px 110px;-webkit-overflow-scrolling:touch;display:none;scrollbar-width:none}
-@media(display-mode:standalone){.scr{padding-bottom:calc(65px + var(--safe-b))}}
+.standalone .scr{padding-bottom:calc(65px + var(--safe-b))}
 .scr::-webkit-scrollbar{display:none}
 .scr.on{display:block}
 
