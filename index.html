@@ -13,8 +13,10 @@
 <link rel="icon" type="image/svg+xml" href="icon/favicon.svg">
 <script>
   if(navigator.standalone||window.matchMedia('(display-mode:standalone)').matches)document.documentElement.classList.add('standalone');
-  function setVH(){document.documentElement.style.setProperty('--vh',window.innerHeight*0.01+'px')}
-  setVH();window.addEventListener('resize',setVH);
+  function setAppHeight(){document.documentElement.style.setProperty('--app-height',window.innerHeight+'px')}
+  setAppHeight();
+  window.addEventListener('resize',setAppHeight);
+  window.addEventListener('orientationchange',setAppHeight);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,9 +54,9 @@
 
 :root{--radius:12px;--radius-lg:20px;--radius-xl:28px;--font:'Outfit',system-ui,sans-serif;--mono:'Space Mono',monospace;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 
-html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:100%;height:calc(var(--vh,1vh)*100);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:100%;height:var(--app-height,100vh);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
 
-.app{display:flex;flex-direction:column;height:100%;height:calc(var(--vh,1vh)*100);max-width:500px;margin:0 auto;position:relative}
+.app{display:flex;flex-direction:column;height:100%;height:var(--app-height,100vh);max-width:500px;margin:0 auto;position:relative}
 .header{padding:calc(var(--safe-t) + 14px) 20px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .logo{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:-0.5px;text-transform:uppercase}
 .logo em{font-style:italic;color:var(--green);font-weight:400}
@@ -63,12 +65,11 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 .h-btn:hover{border-color:var(--border2);color:var(--tx2)}
 .h-btn svg{width:17px;height:17px}
 
-.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 20px calc(70px + var(--safe-b));-webkit-overflow-scrolling:touch;display:none;scrollbar-width:none}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 20px 80px;-webkit-overflow-scrolling:touch;display:none;scrollbar-width:none}
 .scr::-webkit-scrollbar{display:none}
 .scr.on{display:block}
 
-.bnav{position:fixed;bottom:var(--safe-b);left:50%;transform:translateX(-50%);width:100%;max-width:500px;padding:6px 16px 6px;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s}
-.bnav-fill{position:fixed;bottom:0;left:0;right:0;height:var(--safe-b);background:var(--bg);z-index:99;transition:background .3s}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;padding:6px 16px var(--safe-b);background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s}
 .nv{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 14px;border-radius:10px;border:none;background:none;color:var(--tx4);font-size:10px;font-family:var(--font);font-weight:500;letter-spacing:.3px;transition:color .2s}
 .nv svg{width:21px;height:21px}
 .nv.on{color:var(--green)}
@@ -343,7 +344,6 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
   <button class="nv" onclick="go('txs',this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg><span>History</span></button>
   <button class="nv" onclick="go('set',this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>Settings</span></button>
 </nav>
-<div class="bnav-fill"></div>
 
 <div class="mover" id="m-input"><div class="modal"><div class="m-handle"></div><h2 id="mtitle">Log transaction</h2>
   <div class="fg"><label>What happened? <span id="llm-badge" style="display:none" class="status ok">AI</span></label><div class="ni-wrap"><input type="text" id="ni" placeholder='Speak or type — "coffee 5.50 yesterday"' oninput="onInput(this.value)"><button class="mic-inline" id="mic-il" onclick="toggleVoice()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg></button></div><div id="vtx" class="vtx-hint"></div></div>
@@ -608,6 +608,11 @@ document.documentElement.setAttribute('data-theme',localStorage.getItem(LS.theme
 processRecurring();
 (async()=>{if(gUrl()){try{await syncSettings();await syncSheet();await syncCatsSheet()}catch{}}rHome()})();
 initSR();
+function updateBottomSpacing(){const nav=document.querySelector('.bnav');if(!nav)return;const h=nav.offsetHeight;document.querySelectorAll('.scr').forEach(s=>s.style.paddingBottom=(h+8)+'px')}
+updateBottomSpacing();
+window.addEventListener('resize',updateBottomSpacing);
+window.addEventListener('orientationchange',updateBottomSpacing);
+if(window.ResizeObserver){const ro=new ResizeObserver(updateBottomSpacing);ro.observe(document.querySelector('.bnav'))}
 </script>
 </body>
 </html>
