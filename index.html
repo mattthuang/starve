@@ -63,7 +63,8 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
 .scr::-webkit-scrollbar{display:none}
 .scr.on{display:block}
 
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;padding:6px 16px calc(var(--safe-b) + 6px);background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s}
+.bnav{position:fixed;bottom:var(--safe-b);left:50%;transform:translateX(-50%);width:100%;max-width:500px;padding:6px 16px 6px;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s}
+.bnav-fill{position:fixed;bottom:0;left:0;right:0;height:var(--safe-b);background:var(--bg);z-index:99;transition:background .3s}
 .nv{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 14px;border-radius:10px;border:none;background:none;color:var(--tx4);font-size:10px;font-family:var(--font);font-weight:500;letter-spacing:.3px;transition:color .2s}
 .nv svg{width:21px;height:21px}
 .nv.on{color:var(--green)}
@@ -338,6 +339,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:10
   <button class="nv" onclick="go('txs',this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg><span>History</span></button>
   <button class="nv" onclick="go('set',this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>Settings</span></button>
 </nav>
+<div class="bnav-fill"></div>
 
 <div class="mover" id="m-input"><div class="modal"><div class="m-handle"></div><h2 id="mtitle">Log transaction</h2>
   <div class="fg"><label>What happened? <span id="llm-badge" style="display:none" class="status ok">AI</span></label><div class="ni-wrap"><input type="text" id="ni" placeholder='Speak or type — "coffee 5.50 yesterday"' oninput="onInput(this.value)"><button class="mic-inline" id="mic-il" onclick="toggleVoice()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg></button></div><div id="vtx" class="vtx-hint"></div></div>
