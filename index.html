@@ -11,7 +11,11 @@
 <link rel="apple-touch-icon" href="icon/apple-touch-icon.png">
 <link rel="icon" type="image/x-icon" href="icon/favicon.ico">
 <link rel="icon" type="image/svg+xml" href="icon/favicon.svg">
-<script>if(navigator.standalone||window.matchMedia('(display-mode:standalone)').matches)document.documentElement.classList.add('standalone')</script>
+<script>
+  if(navigator.standalone||window.matchMedia('(display-mode:standalone)').matches)document.documentElement.classList.add('standalone');
+  function setVH(){document.documentElement.style.setProperty('--vh',window.innerHeight*0.01+'px')}
+  setVH();window.addEventListener('resize',setVH);
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -48,9 +52,9 @@
 
 :root{--radius:12px;--radius-lg:20px;--radius-xl:28px;--font:'Outfit',system-ui,sans-serif;--mono:'Space Mono',monospace;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 
-html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:100%;overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+html,body{font-family:var(--font);background:var(--bg);color:var(--tx);height:100%;height:calc(var(--vh,1vh)*100);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
 
-.app{display:flex;flex-direction:column;height:100%;max-width:500px;margin:0 auto;position:relative}
+.app{display:flex;flex-direction:column;height:100%;height:calc(var(--vh,1vh)*100);max-width:500px;margin:0 auto;position:relative}
 .header{padding:calc(var(--safe-t) + 14px) 20px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .logo{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:-0.5px;text-transform:uppercase}
 .logo em{font-style:italic;color:var(--green);font-weight:400}
